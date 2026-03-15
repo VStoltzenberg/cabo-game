@@ -9,14 +9,30 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // We use email = username@cabo.local as a workaround for username-based auth
-  const toEmail = (u: string) => `${u.toLowerCase().trim()}@cabo.local`;
+  // We use email = username@cabo.game as a workaround for username-based auth
+  // Sanitize: only allow alphanumeric, dots, hyphens, underscores
+  const toEmail = (u: string) => {
+    const sanitized = u.toLowerCase().trim().replace(/[^a-z0-9._-]/g, '');
+    return `${sanitized}@cabo.game`;
+  };
 
   async function handleSubmit() {
     if (!username.trim() || !password) {
       setError('Bitte Benutzername und Passwort eingeben.');
       return;
     }
+
+    if (username.includes('@')) {
+      setError('Bitte keinen Email-Adresse verwenden — wähle einfach einen Benutzernamen (z.B. "vince").');
+      return;
+    }
+
+    const sanitized = username.toLowerCase().trim().replace(/[^a-z0-9._-]/g, '');
+    if (!sanitized) {
+      setError('Benutzername darf nur Buchstaben (a-z), Zahlen, Punkte, Bindestriche und Unterstriche enthalten.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -25,9 +41,10 @@ export function LoginPage() {
     if (mode === 'register') {
       const { error: signUpErr } = await supabase.auth.signUp({ email, password });
       if (signUpErr) {
-        setError(signUpErr.message === 'User already registered'
-          ? 'Benutzername bereits vergeben.'
-          : signUpErr.message);
+        let msg = signUpErr.message;
+        if (msg === 'User already registered') msg = 'Benutzername bereits vergeben.';
+        else if (msg.includes('invalid format') || msg.includes('validate email')) msg = 'Ungültiger Benutzername. Bitte nur Buchstaben, Zahlen und einfache Sonderzeichen verwenden.';
+        setError(msg);
         setLoading(false);
         return;
       }
@@ -101,7 +118,7 @@ export function LoginPage() {
           <input
             className="input-field"
             type="text"
-            placeholder="Benutzername"
+            placeholder="Benutzername (z.B. vince)"
             value={username}
             onChange={e => setUsername(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSubmit()}
