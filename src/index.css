@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-deep: #0d0618;
+  --bg-mid: #1a0a2e;
+  --bg-top: #2d1b69;
+  --accent: #a78bfa;
+  --gold: #fbbf24;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-deep);
+  color: #e2d9f3;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-mid); }
+::-webkit-scrollbar-thumb { background: var(--bg-top); border-radius: 2px; }
+
+/* Safe area for iPhone notch */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-bold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #7c3aed, #4a2080);
+    box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(124,58,237,0.6);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-bold transition-all duration-200;
+    border: 1px solid rgba(167,139,250,0.4);
+    color: #a78bfa;
+    background: rgba(124,58,237,0.1);
+  }
+  .btn-cabo {
+    @apply px-8 py-3 rounded-xl font-bold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #dc2626, #7f1d1d);
+    box-shadow: 0 4px 15px rgba(220,38,38,0.4);
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+  }
+  .btn-cabo:hover {
+    box-shadow: 0 6px 25px rgba(220,38,38,0.7);
+    transform: translateY(-1px);
+  }
+  .card-panel {
+    background: rgba(45,27,105,0.5);
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 1rem;
+    backdrop-filter: blur(8px);
+  }
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl outline-none transition-all duration-200;
+    background: rgba(45,27,105,0.6);
+    border: 1px solid rgba(167,139,250,0.3);
+    color: #e2d9f3;
+  }
+  .input-field:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.2);
+  }
+  .input-field::placeholder {
+    color: rgba(226,217,243,0.4);
+  }
+}
+
+/* Stars background */
+.stars-bg {
+  background: 
+    radial-gradient(ellipse at top, #1a0a2e 0%, #0d0618 70%),
+    url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='1' fill='white' opacity='0.8'/%3E%3Ccircle cx='150' cy='30' r='0.5' fill='white' opacity='0.6'/%3E%3Ccircle cx='250' cy='80' r='1.5' fill='white' opacity='0.4'/%3E%3Ccircle cx='350' cy='20' r='0.5' fill='white' opacity='0.9'/%3E%3Ccircle cx='100' cy='150' r='1' fill='white' opacity='0.5'/%3E%3Ccircle cx='300' cy='200' r='0.5' fill='white' opacity='0.7'/%3E%3Ccircle cx='200' cy='300' r='1' fill='white' opacity='0.3'/%3E%3Ccircle cx='80' cy='350' r='0.5' fill='white' opacity='0.8'/%3E%3Ccircle cx='380' cy='280' r='1.5' fill='white' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* Pulse animation for active turn */
+@keyframes gentle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.pulse-active { animation: gentle-pulse 2s ease-in-out infinite; }
+
+/* Glow for cabo button */
+@keyframes cabo-glow {
+  0%, 100% { box-shadow: 0 4px 15px rgba(220,38,38,0.4); }
+  50% { box-shadow: 0 4px 30px rgba(220,38,38,0.8); }
+}
+.cabo-glow { animation: cabo-glow 1.5s ease-in-out infinite; }
