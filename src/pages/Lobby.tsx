@@ -59,7 +59,7 @@ export function LobbyPage() {
     setRoomCode(code);
     setLoading(false);
 
-    // Watch for opponent joining
+    // Watch for opponent joining via realtime + polling fallback
     const channel = supabase
       .channel(`room-${data.id}`)
       .on('postgres_changes', {
@@ -70,11 +70,26 @@ export function LobbyPage() {
       }, (payload) => {
         const room = payload.new as any;
         if (room.player1_id && room.status === 'active') {
+          clearInterval(pollInterval);
           channel.unsubscribe();
           navigate(`/game/${data.id}`);
         }
       })
       .subscribe();
+
+    // Polling fallback every 3s in case realtime doesn't fire
+    const pollInterval = setInterval(async () => {
+      const { data: room } = await supabase
+        .from('rooms')
+        .select('player1_id, status')
+        .eq('id', data.id)
+        .single();
+      if (room?.player1_id && room.status === 'active') {
+        clearInterval(pollInterval);
+        channel.unsubscribe();
+        navigate(`/game/${data.id}`);
+      }
+    }, 3000);
   }
 
   async function joinRoom() {
